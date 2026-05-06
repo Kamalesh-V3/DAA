@@ -1,0 +1,127 @@
+#include<iostream>
+using namespace std;
+int Calculation(string str,string sub){
+    int n=str.length();
+    int m=sub.length();
+    int comp=0;
+    int ali=0;
+    for(int i=0;i<n;i++){
+        cout<<str[i]<<" ";
+    }
+    cout<<"\n";
+    for(int i=0;i<n-m+1;i++){
+        int j=0;
+        while(j<m && str[j+i]==sub[j]){
+            comp=comp+1;
+            j=j+1;
+        }
+        comp=comp+1;
+        ali=ali+1;
+        for(int k=0;k<i;k++){
+                cout<<"  ";
+            }
+        for(int l=0;l<m;l++){
+            cout<<sub[l]<<" ";
+        }
+        cout<<"\n";
+        if(j==m){
+            comp=comp-1;
+            cout<<"Alignments: "<<ali<<endl;
+            cout<<"Comparison: "<<comp<<endl;
+            return i;
+        }
+    }
+    cout<<"Alignments: "<<ali<<endl;
+    cout<<"Comparison: "<<comp<<endl;
+    return -1;
+}
+int main(){
+    string str;
+    cout<<"\nEnter the string:";
+    getline(cin,str);
+    string sub;
+    cout<<"\nEnter substring to search:";
+    getline(cin,sub);
+    int s=Calculation(str,sub);
+    if(s==-1){
+        cout<<"Not found\n";
+    }
+    else{
+        cout<<"Found at index: "<<s<<"\n";
+    }
+}
+[24bcs105@mepcolinux c++]$c++ StringSearch.cpp
+[24bcs105@mepcolinux c++]$./a.out
+
+Enter the string:KAMALESH
+
+Enter substring to search:LES
+K A M A L E S H
+L E S
+  L E S
+    L E S
+      L E S
+        L E S
+Alignments: 5
+Comparison: 7
+Found at index: 4
+
+
+[24bcs105@mepcolinux c++]$cat closest.cpp
+#include <iostream>
+#include<cmath>
+using namespace std;
+struct Point {
+    int x;
+    int y;
+};
+float distance(int x1,int x2,int y1,int y2){
+    return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+}
+int main(){
+    int n;
+    cout <<"Enter the number of points:"<<endl;
+    cin>>n;
+    Point p[n];
+    float min=99999999.999;
+    float d;
+    Point a,b;
+    for(int i=0;i<n;i++){
+        cout<<"Enter the x and y value for point"<<i+1<<endl;
+        cin>>p[i].x;
+        cin>>p[i].y;
+    }
+    for(int i=0;i<n-1;i++){
+        for(int j=i+1;j<n;j++){
+            d=distance(p[i].x,p[j].x,p[i].y,p[j].y);
+            cout <<"pair (" << p[i].x<<","<<p[i].y<<"),("<<p[j].x<<","<<p[j].y<<")"<<"distance :"<<d<<endl;
+            if(d<min){
+                min=d;
+                a=p[i];
+                b=p[j];
+            }
+        }
+    }
+    cout << "\nClosest Pair of Points:\n";
+    cout << "(" << a.x << ", " << a.y << ") and ("
+         << b.x << ", " << b.y << ")\n";
+    cout << "Minimum Distance = " << min << endl;
+}
+
+[24bcs105@mepcolinux c++]$c++ closest.cpp
+[24bcs105@mepcolinux c++]$./a.out
+Enter the number of points:
+3
+Enter the x and y value for point1
+1 3
+Enter the x and y value for point2
+3 5
+Enter the x and y value for point3
+2 4
+pair (1,3),(3,5)distance :2.82843
+pair (1,3),(2,4)distance :1.41421
+pair (3,5),(2,4)distance :1.41421
+
+Closest Pair of Points:
+(1, 3) and (2, 4)
+Minimum Distance = 1.41421
