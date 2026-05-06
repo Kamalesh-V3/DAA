@@ -1,0 +1,94 @@
+import java.util.PriorityQueue;
+import java.util.Scanner;
+class HuffmanNode implements Comparable<HuffmanNode> {
+    char ch;
+    int freq;
+    HuffmanNode left, right;
+    HuffmanNode(char ch,int freq) {
+        this.ch = ch;
+        this.freq = freq;
+        this.left = null;
+        this.right = null;
+    }
+    HuffmanNode(int freq, HuffmanNode left, HuffmanNode right) {
+        this.ch = '\0';
+        this.freq = freq;
+        this.left = left;
+        this.right = right;
+    }
+    @Override
+    public int compareTo(HuffmanNode other) {
+        return this.freq - other.freq;
+    }
+
+    public boolean isLeaf() {
+        return (this.left == null) && (this.right == null);
+    }
+}
+
+public class huffmanCode {
+    public static void printCodes(HuffmanNode root, String code) {
+        if (root == null)
+            return;
+        if (root.isLeaf()) {
+            System.out.println(root.ch + ": " + code);
+            return;
+        }
+        printCodes(root.left, code + "0");
+        printCodes(root.right, code + "1");
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter number of characters: ");
+        int n = sc.nextInt();
+        char[] chars = new char[n];
+        int[] freq = new int[n];
+        System.out.println("Enter characters and their frequencies(decimal part):");
+        for (int i = 0; i < n; i++) {
+            chars[i] = sc.next().charAt(0);
+            freq[i] = sc.nextInt();
+        }
+        PriorityQueue<HuffmanNode> pq = new PriorityQueue<>();
+        for (int i = 0; i < n; i++) {
+            pq.add(new HuffmanNode(chars[i], freq[i]));
+        }
+        System.out.println("\nStep-by-step tree construction (combining two smallest nodes):");
+        int step = 1;
+        while (pq.size() > 1) {
+                HuffmanNode left = pq.poll();
+            HuffmanNode right = pq.poll();
+            System.out.printf("Step %d: Combine nodes '%s'(%d) and '%s'(%d)\n",
+                    step++,
+                    left.isLeaf() ? left.ch : "Internal",
+                    left.freq,
+                    right.isLeaf() ? right.ch : "Internal",
+                    right.freq);
+            HuffmanNode merged = new HuffmanNode(left.freq + right.freq, left, right);
+            pq.add(merged);
+        }
+        HuffmanNode root = pq.poll();
+        System.out.println("\nHuffman Codes:");
+        printCodes(root, "");
+        sc.close();
+    }
+}
+[24bcs105@mepcolinux ex7]$javac huffmanCode.java
+[24bcs105@mepcolinux ex7]$java huffmanCode
+Enter number of characters: 4
+Enter characters and their frequencies(decimal part):
+A 10
+B 20
+C 35
+D 35
+
+Step-by-step tree construction (combining two smallest nodes):
+Step 1: Combine nodes 'A'(10) and 'B'(20)
+Step 2: Combine nodes 'Internal'(30) and 'C'(35)
+Step 3: Combine nodes 'D'(35) and 'Internal'(65)
+
+Huffman Codes:
+D: 0
+A: 100
+B: 101
+C: 11
+[24bcs105@mepcolin
