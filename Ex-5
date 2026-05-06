@@ -1,0 +1,140 @@
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+using namespace std;
+
+#define NO_OF_CHARS 256
+
+void buildShiftTable(const string& pattern, int shift[]) {
+    int m = pattern.length();
+
+    for (int i = 0; i < NO_OF_CHARS; i++)
+        shift[i] = m;
+
+    for (int i = 0; i < m - 1; i++)
+        shift[(unsigned char)pattern[i]] = m - 1 - i;
+}
+
+void horspoolSearch(const string& text, const string& pattern) {
+    int n = text.length();
+    int m = pattern.length();
+
+    if (m > n) {
+        cout << "Pattern longer than text. No match possible.\n";
+        return;
+    }
+
+    int shift[NO_OF_CHARS];
+    buildShiftTable(pattern, shift);
+
+    bool found = false;
+    int i = m - 1;  // align at last char of pattern
+
+    cout << "\nSearching for pattern: \"" << pattern << "\" in the text\n";
+
+    while (i < n) {
+        int k = 0;
+
+        // Match pattern right to left
+        while (k < m && pattern[m - 1 - k] == text[i - k])
+            k++;
+
+        if (k == m) {
+            cout << "Pattern found at index: " << (i - m + 1) << "\n";
+            found = true;
+        }
+
+        // Shift by bad character table value
+        i += shift[(unsigned char)text[i]];
+    }
+
+    if (!found)
+        cout << "Pattern not found in text.\n";
+}
+
+void printShiftTable(const string& pattern) {
+    int shift[NO_OF_CHARS];
+    buildShiftTable(pattern, shift);
+    int m = pattern.length();
+
+    cout << "\n--- Shift Table (non-default entries) ---\n";
+    cout << "Default shift (all others) = " << m << "\n";
+    for (int i = 32; i < 127; i++) {
+        if (shift[i] != m)
+            cout << "  '" << (char)i << "' -> shift " << shift[i] << "\n";
+    }
+    cout << "-----------------------------------------\n";
+}
+
+int main() {
+
+    string text1;
+    cout << "Enter the TEXT : ";
+    cin >> text1;
+    string pattern1;
+    cout << "Enter the Pattern: ";
+    cin >> pattern1;
+    printShiftTable(pattern1);
+    horspoolSearch(text1, pattern1);
+
+    return 0;
+}
+[24bcs105@mepcolinux ex5]$cat cbs.cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+void countingSort(vector<int>& arr) {
+    if (arr.empty()) return;
+
+    int maxVal = *max_element(arr.begin(), arr.end());
+    int minVal = *min_element(arr.begin(), arr.end());
+    int range  = maxVal - minVal + 1;
+
+    vector<int> count(range, 0);
+    vector<int> output(arr.size());
+
+    for (int x : arr)
+        count[x - minVal]++;
+
+    for (int i = 1; i < range; i++)
+        count[i] += count[i - 1];
+
+    for (int i = arr.size() - 1; i >= 0; i--) {
+        output[count[arr[i] - minVal] - 1] = arr[i];
+        count[arr[i] - minVal]--;
+    }
+
+    arr = output;
+}
+
+void printArray(const vector<int>& arr, const string& label) {
+    cout << label;
+    for (int x : arr) cout << x << " ";
+    cout << "\n";
+}
+
+int main() {
+    vector<int> arr = {4, 2, 2, 8, 3, 3, 1, 7, 5};
+    printArray(arr, "Before sorting: ");
+    countingSort(arr);
+    printArray(arr, "After sorting:  ");
+
+    return 0;
+}
+
+[24bcs105@mepcolinux ex5]$g++ hors.cpp
+[24bcs105@mepcolinux ex5]$./a.out
+Enter the TEXT : HELLOWORLD
+Enter the Pattern: LLO
+
+--- Shift Table (non-default entries) ---
+Default shift (all others) = 3
+  'L' -> shift 1
+-----------------------------------------
+
+Searching for pattern: "LLO" in the text
+Pattern found at index: 2
