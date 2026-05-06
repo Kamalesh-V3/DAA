@@ -1,0 +1,147 @@
+import java.util.*;
+public class Mergesort {
+        public static void copyArr(int[] A) {
+                int num=A.length;
+                if(num>1) {
+                        int n=num/2;
+                        int[] B = new int[n];
+                        int m=num-n;
+                        int[] C = new int[m];
+                        for (int i =0;i<n;i++) {
+                                B[i]=A[i];
+                                                                }
+                        for(int i=0;i<m;i++) {
+                                C[i]=A[i+n];
+                        }
+                        copyArr(B);
+                        copyArr(C);
+                        mergeDo(B,C,A);
+                }
+        }
+
+        public static void mergeDo(int[] B,int[] C,int[] A) {
+                int i=0;
+                int j=0;
+                int k=0;
+                int p=B.length;
+                int q=C.length;
+                while(i<p && j<q) {
+                        if(B[i]<=C[j]) {
+                                A[k]=B[i];
+                                i++;
+                                k++;
+                        }
+                        else {
+                                A[k]=C[j];
+                                j++;
+                                k++;
+                        }
+                }
+                if (i==p) {
+                        for(int a=j;a<q;a++) {
+                                A[k]=C[a];
+                                k++;
+                        }
+                }
+                else {
+                        for( int a=i;a<p;a++) {
+                                A[k]=B[a];
+                                k++;
+                        }
+                }
+        }
+        public static void main(String[] args) {
+                int[] Ar= {4,3,5,7,8,9,10,1};
+                Scanner sc = new Scanner(System.in);
+                System.out.println("no of elements:");
+                int n=sc.nextInt();
+                int[] Ar1=new int[n];
+                for(int i=0;i<n;i++) {
+                        int n1=sc.nextInt();
+                        Ar1[i]=n1;
+                }
+                System.out.println(Arrays.toString(Ar1));
+                copyArr(Ar1);
+                System.out.println(Arrays.toString(Ar1));
+        }
+}
+[24bcs105@mepcolinux ex3]$java Mergesort
+no of elements:
+5
+23
+12
+56
+83
+1
+[23, 12, 56, 83, 1]
+[1, 12, 23, 56, 83]
+[24bcs105@mepcolinux ex3]$cat Quicksort.java
+import java.util.*;
+
+class QuickSortPgm {
+        public void quickSort(int[] A,int l, int r) {
+                if (l<r) {
+                        int s=partition(A,l,r);
+                        quickSort(A,l,s-1);
+                        quickSort(A,s+1,r);
+                }
+
+        }
+        public void swap(int[] A,int i,int j) {
+                int t=A[i];
+                A[i]=A[j];
+                A[j]=t;
+        }
+        public int partition(int[] A,int l,int r) {
+                int p=A[l];
+                int i = l;
+                int j = r+1;
+                do {
+                        i=i+1;
+                        while(i<r && A[i]<p)
+                                i=i+1;
+                        j=j-1;
+                        while(A[j]>p)
+                                j=j-1;
+                        swap(A,i,j);
+                }while(i<j);
+                swap(A,i,j);
+                swap(A,l,j);
+
+                return j;
+
+        }
+}
+
+public class Quicksort {
+        public static void main(String[] args) {
+                Scanner sc = new Scanner(System.in);
+                QuickSortPgm qsp = new QuickSortPgm();
+
+
+                System.out.println("no of elements:");
+                int n=sc.nextInt();
+                int[] Ar1=new int[n];
+                for(int i=0;i<n;i++) {
+                        int n1=sc.nextInt();
+                        Ar1[i]=n1;
+                }
+
+                int[] Ar= {4,3,5,7,8,9,10,1};
+                System.out.println(Arrays.toString(Ar1));
+                qsp.quickSort(Ar1,0,Ar1.length-1);
+                System.out.println(Arrays.toString(Ar1));
+
+
+        }
+}
+[24bcs105@mepcolinux ex3]$java Quicksort
+no of elements:
+5
+87
+91
+23
+12
+31
+[87, 91, 23, 12, 31]
+[12, 23, 31, 87, 91]
