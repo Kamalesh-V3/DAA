@@ -1,0 +1,102 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cmath>
+using namespace std;
+
+void printBoard(const vector<int>& queens, int n, int solutionNum) {
+    cout << "\n  Solution " << solutionNum << ":\n===================";
+    cout << "  ";
+    cout << "\n";
+
+    for (int row = 0; row < n; row++) {
+        cout << "  ";
+        for (int col = 0; col < n; col++) {
+            if (queens[row] == col)
+                cout << " Q ";
+            else
+                cout << " * ";
+        }
+        cout << "\n";
+        cout << "  ";
+        cout << "\n";
+    }
+    cout << "\n";
+}
+
+bool isSafe(const vector<int>& queens, int row, int col) {
+    for (int r = 0; r < row; r++) {
+        int c = queens[r];
+        if (c == col)
+           return false;
+        if (abs(r - row) == abs(c - col))
+           return false;
+    }
+    return true;
+}
+
+void solve(vector<int>& queens, int n, int row,
+           int& solutionCount, bool showSteps, bool findAll) {
+    if (row == n) {
+        solutionCount++;
+        printBoard(queens, n, solutionCount);
+        if (!findAll) return;
+        return;
+    }
+
+    for (int col = 0; col < n; col++) {
+        bool safe = isSafe(queens, row, col);
+
+        if (safe) {
+            queens[row] = col;
+            solve(queens, n, row + 1, solutionCount, showSteps, findAll);
+            if (!findAll && solutionCount > 0) return;
+            queens[row] = -1;
+        }
+    }
+}
+
+int main() {
+    int n;
+    cout << "Enter N (board size): ";
+    cin  >> n;
+    bool showSteps = true;
+    bool findAll = true;
+    cout << "========================================\n";
+    vector<int> queens(n, -1);
+    int solutionCount = 0;
+    solve(queens, n, 0, solutionCount, showSteps, findAll);
+    cout << "========================================\n";
+    cout << "  Total Solutions Found: " << solutionCount << "\n";
+
+    return 0;
+}
+[24bcs105@mepcolinux ex9]$./a.out
+Enter N (board size): 4
+========================================
+
+  Solution 1:
+===================
+   *  Q  *  *
+
+   *  *  *  Q
+
+   Q  *  *  *
+
+   *  *  Q  *
+
+
+
+  Solution 2:
+===================
+   *  *  Q  *
+
+   Q  *  *  *
+
+   *  *  *  Q
+
+   *  Q  *  *
+
+
+========================================
+  Total Solutions Found: 2
